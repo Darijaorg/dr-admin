@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Word Form</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+</head>
+<body>
+    <h2>Add a New Word to the Dictionary</h2>
+    <form action="/submit-word" method="post" id="wordForm" >
+        <!-- Word in Moroccan Darija -->
+        <label for="word">Word (in Moroccan Darija) in Latin letters:</label><br>
+        <input type="text" id="word" name="word" required><br><br>
+
+        <!-- Word Type -->
+        <label for="word_type">Word Type:</label><br>
+        <select id="word_type" name="word_type" required>
+            <option value="noun">Noun</option>
+            <option value="verb">Verb</option>
+            <option value="adjective">Adj</option>
+            <option value="adverb">Adv</option>
+            <option value="pronoun">Pronoun</option>
+            <option value="preposition">Preposition</option>
+            <option value="other">Other</option>
+        </select><br><br>
+
+        <!-- Phonetic Transcription -->
+        <label for="phonetic">Phonetic Transcription:</label><br>
+        <input type="text" id="phonetic" name="phonetic" required><br><br>
+
+        <!-- Meaning in Arabic -->
+        <label for="meaning_arabic">Meaning (in Arabic):</label><br>
+        <textarea id="meaning_arabic" name="meaning_arabic" rows="3" required></textarea><br><br>
+
+        <!-- Example Sentence -->
+        <label for="example_sentence">Example Sentence:</label><br>
+        <textarea id="example_sentence" name="example_sentence" rows="3" required></textarea><br><br>
+
+        <!-- Meaning in English -->
+        <label for="meaning_english">Meaning (in English):</label><br>
+        <input type="text" id="meaning_english" name="meaning_english"><br><br>
+
+        <!-- Word Origin -->
+        <label for="origin">Origin of the Word:</label><br>
+        <input type="text" id="origin" name="origin"><br><br>
+
+        <!-- Synonyms -->
+        <label for="synonyms">Synonyms (if any):</label><br>
+        <input type="text" id="synonyms" name="synonyms"><br><br>
+
+        <!-- Additional Notes -->
+        <label for="notes">Additional Notes:</label><br>
+        <textarea id="notes" name="notes" rows="3"></textarea><br><br>
+
+        <!-- Category -->
+        <label for="category">Category:</label><br>
+        <select id="category" name="category" required>
+            <option value="literature">Literature</option>
+            <option value="daily_life">Daily Life</option>
+            <option value="food">Food</option>
+            <option value="travel">Travel</option>
+            <option value="other">Other</option>
+        </select><br><br>
+
+        <!-- Formal or Informal -->
+        <label>Is the word formal or informal?</label><br>
+        <input type="radio" id="formal" name="formality" value="formal" required>
+        <label for="formal">Formal</label><br>
+        <input type="radio" id="informal" name="formality" value="informal" required>
+        <label for="informal">Informal</label><br><br>
+
+        <!-- Date Added -->
+        <label for="date_added">Date Added:</label><br>
+        <input type="date" id="date_added" name="date_added" required><br><br>
+
+        <!-- Word Source -->
+        <label for="source">Source of the Word:</label><br>
+        <input type="text" id="source" name="source"><br><br>
+
+        <!-- Submit Button -->
+        <input type="submit" value="Add Word">
+    </form>
+
+    <style>
+ /* Basic reset for margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Style for the form container */
+body {
+    background-color: #f4f4f9;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    align-items: center;
+    height: 100vh;
+}
+
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+}
+
+h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+/* Style for form elements */
+label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+}
+
+input[type="text"], input[type="date"], select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Radio buttons styling */
+input[type="radio"] {
+    margin-right: 8px;
+}
+
+input[type="radio"] + label {
+    margin-right: 20px;
+}
+
+/* Submit button styling */
+input[type="submit"] {
+    background-color: #5cb85c;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+input[type="submit"]:hover {
+    background-color: #4cae4c;
+}
+
+
+
+    </style>
+
+
+<script>
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBOGC8qinBmX_F4msMrrxV3VgbwYt6mtg8",
+      authDomain: "darija2024-database.firebaseapp.com",
+      databaseURL: "https://darija2024-database-default-rtdb.firebaseio.com",
+      projectId: "darija2024-database",
+      storageBucket: "darija2024-database.appspot.com",
+      messagingSenderId: "621215461163",
+      appId: "1:621215461163:web:d594741683e99c742fdf6e",
+      measurementId: "G-VYFCV3GLZN"
+    };
+  
+
+// Initialize Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const database = firebase.database(app);
+
+// Form submission handler
+document.getElementById('wordForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent form submission
+
+    // Get form values
+    const word = document.getElementById('word').value;
+    const wordType = document.getElementById('word_type').value;
+    const phonetic = document.getElementById('phonetic').value;
+    const meaningArabic = document.getElementById('meaning_arabic').value;
+    const exampleSentence = document.getElementById('example_sentence').value;
+    const meaningEnglish = document.getElementById('meaning_english').value || "undefined";
+    const origin = document.getElementById('origin').value;
+    const synonyms = document.getElementById('synonyms').value;
+    const notes = document.getElementById('notes').value;
+    const category = document.getElementById('category').value;
+    const formality = document.querySelector('input[name="formality"]:checked').value;
+    const dateAdded = document.getElementById('date_added').value;
+    const source = document.getElementById('source').value;
+
+    // Create custom ID
+    const firstLetter = word.charAt(0).toLowerCase();
+    const customId = `${firstLetter}-${wordType}-${word}-${meaningEnglish}`;
+
+    // Store data in Firebase
+    firebase.database().ref('words/' + customId).set({
+        word: word,
+        wordType: wordType,
+        phonetic: phonetic,
+        meaningArabic: meaningArabic,
+        exampleSentence: exampleSentence,
+        meaningEnglish: meaningEnglish,
+        origin: origin,
+        synonyms: synonyms,
+        notes: notes,
+        category: category,
+        formality: formality,
+        dateAdded: dateAdded,
+        source: source
+    }).then(() => {
+        alert('Word added successfully!');
+    }).catch((error) => {
+        console.error('Error adding word: ', error);
+    });
+});
+
+</script>
+</body>
+</html>

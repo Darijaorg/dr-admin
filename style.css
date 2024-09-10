@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+*{
+    font-family: 'Poppins', sans-serif;
+}
+
+i{
+    font-size: 20px;
+    color: black;
+    padding: 5px;
+    border-radius: 100px;
+    transition: all .3s;
+}
+
+i:hover{
+    background-color: rgb(248, 248, 248);
+    cursor: pointer;
+}
+a{
+    color: white;
+    cursor: auto;
+}
+
+h1{
+    text-align: center;
+}
+
+form{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: solid 1px black;
+  
+  padding: 10px;
+  border-radius: 10px;
+  gap: 4px;
+
+}
+label{
+    width: 50%;
+    text-align: start;
+}
+input{
+    width: 50%;
+    text-align: center;
+}
+
+input[readonly] {
+    background-color: #f0f0f0; /* Light gray background */
+    color: #666; /* Dark gray text */
+    border: 1px solid #ccc; /* Gray border */
+    cursor: not-allowed; /* Change cursor to indicate it's not editable */
+}
+
+/* Optional: Add focus styles for readonly inputs */
+input[readonly]:focus {
+    outline: none; /* Remove the outline when clicked */
+}
+
+button {
+    border:  solid 1px black;
+    background-color: white;
+    padding: 10px;
+    border-radius: 20px;
+    transition: all .3s;
+
+}
+button:hover{
+    color: white;
+    background-color: black;
+    transition: all .3s;
+}
+

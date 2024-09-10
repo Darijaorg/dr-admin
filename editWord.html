@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>word</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link rel="stylesheet" href="loader.css">
+
+</head>
+<body>
+    <a href="darijaWords.html"><i class="fa fa-arrow-left"></i> َ</a>
+
+    <div class="loader-section">
+        <div class="loader" id="loader"></div>
+
+    </div>
+<div class="details" id="container">
+    
+    <h1 id="title">chokran</h1>
+
+    <form id="dataForm">
+        <label for="word">Enter the word (Darija):</label>
+        <input type="text" id="word" name="word" required>
+        <br>
+        <label for="translation">Enter the translation (English):</label>
+        <input type="text" id="translation" name="translation" required>
+        <br>
+        <label for="type">Enter the type (e.g., verb, adj , noun):</label>
+        <input type="text" id="type" name="type" required>
+        <br>
+        <label for="details">Enter details (optional):</label>
+        <input type="text" id="details" name="details" value="-">
+        <br>
+        <button type="submit">Submit</button>
+      </form>
+    
+</div>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+*{
+    font-family: 'Poppins', sans-serif;
+}
+i{
+    font-size: 25px;
+    color: black;
+    padding: 5px;
+    border-radius: 100px;
+    transition: all .3s;
+}
+
+i:hover{
+    background-color: rgb(248, 248, 248);
+    cursor: pointer;
+}
+a{
+    color: white;
+    cursor: auto;
+}
+.details{
+    margin-top: 50px;
+
+    display: none;
+  flex-direction: column;
+  
+ 
+  border: solid 1px black;
+  
+  padding: 10px;
+  border-radius: 10px;
+  gap: 4px;
+}
+
+.edit-div{
+    display: flex;
+    justify-content: end;
+   
+}
+
+form{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  gap: 4px;
+
+}
+label{
+    width: 50%;
+    text-align: start;
+}
+input{
+    width: 50%;
+    text-align: center;
+    font-size: 17px;
+}
+
+
+button {
+    border:  solid 1px black;
+    background-color: white;
+    padding: 10px;
+    border-radius: 20px;
+    transition: all .3s;
+
+}
+button:hover{
+    color: white;
+    background-color: black;
+    transition: all .3s;
+}
+
+
+
+</style>
+
+
+
+    <script>
+       var isLogin = localStorage.getItem('isLogin');
+        if(isLogin !== 'true'){
+            window.location.href = `login.html`;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+         const id = params.get('id');
+         // DOM
+         
+         const title = document.getElementById('title')
+
+         const wordP = document.getElementById('word')
+         const typeP = document.getElementById('type')
+         const translationP = document.getElementById('translation')
+         const detailsP = document.getElementById('details')
+
+         const loader = document.getElementById('loader');
+         const container = document.getElementById('container');
+
+
+         const firebaseConfig = {
+      apiKey: "AIzaSyBOGC8qinBmX_F4msMrrxV3VgbwYt6mtg8",
+      authDomain: "darija2024-database.firebaseapp.com",
+      databaseURL: "https://darija2024-database-default-rtdb.firebaseio.com",
+      projectId: "darija2024-database",
+      storageBucket: "darija2024-database.appspot.com",
+      messagingSenderId: "621215461163",
+      appId: "1:621215461163:web:d594741683e99c742fdf6e",
+      measurementId: "G-VYFCV3GLZN"
+    };
+
+
+     // Initialize Firebase
+     const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database(app);
+
+        // Reference to your data in Firebase
+        const wordRef = database.ref('darija-words');
+
+        // Fetch data from Firebase
+        wordRef.once('value', (snapshot) => {
+            const data = snapshot.val();
+            const wordData = data[id]
+
+            console.log(wordData)
+
+            document.title = `${wordData['word']} | edit}`;
+
+            title.textContent =  `${wordData['word']}`
+            wordP.value = `${wordData['word']}`
+            typeP.value = `${wordData['type']}`
+            translationP.value = `${wordData['translation']}`
+            detailsP.value= `${wordData['details']}`
+           
+        
+        loader.style.display = 'none'
+        container.style.display = 'grid'
+            
+            
+        });
+
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form from submitting normally
+
+      var word = document.getElementById('word').value.toLowerCase().replace(/\s+/g, '');
+      console.log(word);
+
+      var translation = document.getElementById('translation').value.toLowerCase().replace(/\s+/g, '');
+      console.log(translation);
+
+      var type = document.getElementById('type').value.toLowerCase().replace(/\s+/g, '');
+      console.log(type);
+
+      var details = document.getElementById('details').value;
+
+      if(details === ''){
+        details = '-';
+      }
+
+      var word_id = `${word[0]}-${type}-${word}-${translation}`;
+      
+
+
+
+// Remove the item
+database.ref(`darija-words/${id}`).remove()
+  .then(() => {
+     // Push the data to Firebase Realtime Database
+ database.ref(`darija-words/${word_id}`).set({
+        "word": word,
+        "translation": translation,
+        "type" : type,
+        "details" : details
+      }).then(function() {
+        alert('Data stored successfully!');
+      }).catch(function(error) {
+        console.error('Error storing data:', error);
+      });
+
+      // Clear the form
+      document.getElementById('dataForm').reset();
+
+    
+    window.location.href = `word.html?id=${word_id}`;
+
+
+    
+    console.log("Item edited successfully!");
+
+  })
+  .catch((error) => {
+    console.error("Error editing item: ", error);
+  });
+
+
+
+     
+
+    });
+
+
+    </script>
+</body>
+</html>

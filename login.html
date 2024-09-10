@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Darija-database2024</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+        <link rel="stylesheet" href="loader.css">
+    </head>
+<body>
+
+    <form action="submit" id="login-form">
+        <div class="loader-section">
+            <div class="loader" id="loader"></div>
+    
+        </div>
+
+        <label for="username" >username : </label>
+        <input type="text" id="username" required> 
+
+        <label for="password" >password : </label>
+        <input type="password" id="password" required>
+        <button type="submit">login</button>
+        <p id="error-message"></p>
+        </form>
+
+
+
+
+
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+*{
+    font-family: 'Poppins', sans-serif;
+}
+
+
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: solid 1px black;
+    border-radius: 20px;
+    padding: 30px;
+    gap: 10px;
+}
+
+label{
+    font-size: 16px;
+}
+button {
+    margin-top: 10px;
+    border:  solid 1px black;
+    background-color: white;
+    padding: 10px;
+    border-radius: 20px;
+    transition: all .3s;
+
+}
+button:hover{
+    color: white;
+    background-color: black;
+    transition: all .3s;
+}
+
+    </style>
+
+
+<script type="module">
+
+
+    // Import Firebase configuration and authentication modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+// Your web app's Firebase configuration (replace with your config object)
+const firebaseConfig = {
+      apiKey: "AIzaSyBOGC8qinBmX_F4msMrrxV3VgbwYt6mtg8",
+      authDomain: "darija2024-database.firebaseapp.com",
+      databaseURL: "https://darija2024-database-default-rtdb.firebaseio.com",
+      projectId: "darija2024-database",
+      storageBucket: "darija2024-database.appspot.com",
+      messagingSenderId: "621215461163",
+      appId: "1:621215461163:web:d594741683e99c742fdf6e",
+      measurementId: "G-VYFCV3GLZN"
+    };
+  
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+loader.style.display = 'none'
+
+// Handle form submission
+document.getElementById('login-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+    loader.style.display = 'block'
+    
+    const email = document.getElementById('username').value + "@darija.org";
+    const password = document.getElementById('password').value;
+    
+    
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // Signed in
+         loader.style.display = 'none'
+
+            const user = userCredential.user;
+            localStorage.setItem('isLogin', 'true');
+
+
+            
+            window.location.href = `index.html`;
+
+            // Redirect or handle successful login
+        })
+        .catch((error) => {
+            // Handle Errors here.
+         loader.style.display = 'none'
+
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            document.getElementById('error-message').textContent = errorMessage;
+            console.error('Error:', errorCode, errorMessage);
+        });
+});
+
+
+</script>
+    
+</body>
+</html>

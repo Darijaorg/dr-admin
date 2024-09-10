@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>store a darija verb in database</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+</head>
+<body>
+    <a href="index.html"><i class="fa fa-arrow-left"></i>.</a>
+
+  
+    <h1>store a darija verb in database</h1>
+<form id="verbData">
+    
+  <div id="aboutForm">
+        <h3>about verb</h3>
+        <label for="word">Enter the root verb (Darija):</label>
+        <input type="text" id="word" name="word" required>
+        <br>
+        <label for="translation">Enter the translation (English):</label>
+        <input type="text" id="translation" name="translation" required>
+        <br>
+        <label for="phonetic">phonetic (optional):</label>
+        <input type="text" id="phonetic" name="phonetic" value="-">
+        <br>
+        <label for="example">Enter an example (optional):</label>
+        <input type="text" id="example" name="example" value="-">
+        <br>
+        <label for="details">Enter details (optional):</label>
+        <input type="text" id="details" name="details" value="-">
+        <br>
+       
+      
+      </div>
+
+
+
+
+      <section id="tenses">
+        <div class="past">
+            <h4>past/lifat</h4>
+    
+            <label for="ana-fat">ana</label>
+            <input type="text" id="ana-fat" required>
+    
+            <label for="nta-fat">nta</label>
+            <input type="text" id="nta-fat" required>
+    
+            <label for="nti-fat">nti</label>
+            <input type="text" id="nti-fat" required>
+    
+            <label for="howa-fat">howa</label>
+            <input type="text" id="howa-fat" required>
+    
+            <label for="hia-fat">hia</label>
+            <input type="text" id="hia-fat" required>
+    
+            <label for="hna-fat">hna</label>
+            <input type="text" id="hna-fat" required>
+    
+            <label for="ntoma-fat">ntoma</label>
+            <input type="text" id="ntoma-fat" required>
+        </div>
+    
+        <div class="present">
+            <h4>present/daba</h4>
+    
+            <label for="ana-daba">ana</label>
+            <input type="text" id="ana-daba" required>
+    
+            <label for="nta-daba">nta</label>
+            <input type="text" id="nta-daba" required>
+    
+            <label for="nti-daba">nti</label>
+            <input type="text" id="nti-daba" required>
+    
+            <label for="howa-daba">howa</label>
+            <input type="text" id="howa-daba" required>
+    
+            <label for="hia-daba">hia</label>
+            <input type="text" id="hia-daba" required>
+    
+            <label for="hna-daba">hna</label>
+            <input type="text" id="hna-daba" required>
+    
+            <label for="ntoma-daba">ntoma</label>
+            <input type="text" id="ntoma-daba" required>
+        </div>
+    
+        <div class="future">
+            <h4>future/lmaji</h4>
+    
+            <label for="ana-lmaji">ana</label>
+            <input type="text" id="ana-lmaji" required>
+    
+            <label for="nta-lmaji">nta</label>
+            <input type="text" id="nta-lmaji" required>
+    
+            <label for="nti-lmaji">nti</label>
+            <input type="text" id="nti-lmaji" required>
+    
+            <label for="howa-lmaji">howa</label>
+            <input type="text" id="howa-lmaji" required>
+    
+            <label for="hia-lmaji">hia</label>
+            <input type="text" id="hia-lmaji" required>
+    
+            <label for="hna-lmaji">hna</label>
+            <input type="text" id="hna-lmaji" required>
+    
+            <label for="ntoma-lmaji">ntoma</label>
+            <input type="text" id="ntoma-lmaji" required>
+        </div>
+    </section>
+    
+
+
+
+            
+    </section>
+<button type="submit">submit</button>
+</form>
+  
+
+<script>
+      var isLogin = localStorage.getItem('isLogin');
+        if(isLogin !== 'true'){
+            window.location.href = `login.html`;
+        }
+
+
+
+     const params = new URLSearchParams(window.location.search);
+     const id = params.get('id');
+     //console.log(id)
+
+
+           // Your web app's Firebase configuration
+      const firebaseConfig = {
+      apiKey: "AIzaSyBOGC8qinBmX_F4msMrrxV3VgbwYt6mtg8",
+      authDomain: "darija2024-database.firebaseapp.com",
+      databaseURL: "https://darija2024-database-default-rtdb.firebaseio.com",
+      projectId: "darija2024-database",
+      storageBucket: "darija2024-database.appspot.com",
+      messagingSenderId: "621215461163",
+      appId: "1:621215461163:web:d594741683e99c742fdf6e",
+      measurementId: "G-VYFCV3GLZN"
+    };
+  
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Reference to the Realtime Database
+    const database = firebase.database();
+    const wordRef = database.ref('darija-words');
+
+     if(id !== null){
+
+
+
+           // Fetch data from Firebase
+            wordRef.once('value', (snapshot) => {
+            const data = snapshot.val();
+            const wordData = data[id]
+
+            console.log(wordData)
+
+            document.title = `${wordData['word']} | edit`;
+
+
+            /**/
+const wordP = document.getElementById('word');
+const translationP = document.getElementById('translation');
+const phoneticP = document.getElementById('phonetic');
+const exampleP = document.getElementById('example');
+const detailsP = document.getElementById('details');
+
+// Past tense section
+const anaFatP = document.getElementById('ana-fat');
+const ntaFatP = document.getElementById('nta-fat');
+const ntiFatP = document.getElementById('nti-fat');
+const howaFatP = document.getElementById('howa-fat');
+const hiaFatP = document.getElementById('hia-fat');
+const hnaFatP = document.getElementById('hna-fat');
+const ntomaFatP = document.getElementById('ntoma-fat');
+
+// Present tense section
+const anaDabaP = document.getElementById('ana-daba');
+const ntaDabaP = document.getElementById('nta-daba');
+const ntiDabaP = document.getElementById('nti-daba');
+const howaDabaP = document.getElementById('howa-daba');
+const hiaDabaP = document.getElementById('hia-daba');
+const hnaDabaP = document.getElementById('hna-daba');
+const ntomaDabaP = document.getElementById('ntoma-daba');
+
+// Future tense section
+const anaLmajiP = document.getElementById('ana-lmaji');
+const ntaLmajiP = document.getElementById('nta-lmaji');
+const ntiLmajiP = document.getElementById('nti-lmaji');
+const howaLmajiP = document.getElementById('howa-lmaji');
+const hiaLmajiP = document.getElementById('hia-lmaji');
+const hnaLmajiP = document.getElementById('hna-lmaji');
+const ntomaLmajiP = document.getElementById('ntoma-lmaji');
+            /**/
+
+
+
+
+
+
+
+
+
+           // Update general information
+wordP.value = wordData['word'];
+translationP.value = wordData['translation'];
+phoneticP.value = wordData['phonetic'];
+exampleP.value = wordData['example'];
+detailsP.value = wordData['details'];
+
+// Update past tense
+anaFatP.value = wordData['past-tense']['ana'];
+ntaFatP.value = wordData['past-tense']['nta'];
+ntiFatP.value = wordData['past-tense']['nti'];
+howaFatP.value = wordData['past-tense']['howa'];
+hiaFatP.value = wordData['past-tense']['hia'];
+hnaFatP.value = wordData['past-tense']['hna'];
+ntomaFatP.value = wordData['past-tense']['ntoma'];
+
+// Update present tense
+anaDabaP.value = wordData['present-tense']['ana'];
+ntaDabaP.value = wordData['present-tense']['nta'];
+ntiDabaP.value = wordData['present-tense']['nti'];
+howaDabaP.value = wordData['present-tense']['howa'];
+hiaDabaP.value = wordData['present-tense']['hia'];
+hnaDabaP.value = wordData['present-tense']['hna'];
+ntomaDabaP.value = wordData['present-tense']['ntoma'];
+
+// Update future tense
+anaLmajiP.value = wordData['future-tense']['ana'];
+ntaLmajiP.value = wordData['future-tense']['nta'];
+ntiLmajiP.value = wordData['future-tense']['nti'];
+howaLmajiP.value = wordData['future-tense']['howa'];
+hiaLmajiP.value = wordData['future-tense']['hia'];
+hnaLmajiP.value = wordData['future-tense']['hna'];
+ntomaLmajiP.value = wordData['future-tense']['ntoma'];
+
+        
+            
+            
+        });
+
+
+
+
+
+     }
+
+     
+
+const wordInput = document.getElementById('word')
+// Past Tense Section
+const anaFatInput = document.getElementById('ana-fat');
+const ntaFatInput = document.getElementById('nta-fat');
+const ntiFatInput = document.getElementById('nti-fat');
+const howaFatInput = document.getElementById('howa-fat');
+const hiaFatInput = document.getElementById('hia-fat');
+const hnaFatInput = document.getElementById('hna-fat');
+const ntomaFatInput = document.getElementById('ntoma-fat');
+
+// Present Tense Section
+const anaDabaInput = document.getElementById('ana-daba');
+const ntaDabaInput = document.getElementById('nta-daba');
+const ntiDabaInput = document.getElementById('nti-daba');
+const howaDabaInput = document.getElementById('howa-daba');
+const hiaDabaInput = document.getElementById('hia-daba');
+const hnaDabaInput = document.getElementById('hna-daba');
+const ntomaDabaInput = document.getElementById('ntoma-daba');
+
+// Future Tense Section
+const anaLmajiInput = document.getElementById('ana-lmaji');
+const ntaLmajiInput = document.getElementById('nta-lmaji');
+const ntiLmajiInput = document.getElementById('nti-lmaji');
+const howaLmajiInput = document.getElementById('howa-lmaji');
+const hiaLmajiInput = document.getElementById('hia-lmaji');
+const hnaLmajiInput = document.getElementById('hna-lmaji');
+const ntomaLmajiInput = document.getElementById('ntoma-lmaji');
+
+
+wordInput.addEventListener('change', function(event) {
+    var verb = event.target.value
+// Assume `verb` is the base verb you want to conjugate
+
+// Past Tense Section
+anaFatInput.value = `${verb}t`;
+ntaFatInput.value = `${verb}ti`;
+ntiFatInput.value = `${verb}ti`;
+howaFatInput.value = `${verb}`;
+hiaFatInput.value = `${verb}t`;
+hnaFatInput.value = `${verb}na`;
+ntomaFatInput.value = `${verb}to`;
+
+// Present Tense Section
+anaDabaInput.value = `kan${verb}`;
+ntaDabaInput.value = `kat${verb}`;
+ntiDabaInput.value = `kat${verb}i`;
+howaDabaInput.value = `kay${verb}`;
+hiaDabaInput.value = `kat${verb}`;
+hnaDabaInput.value = `kan${verb}o`;
+ntomaDabaInput.value = `kat${verb}o`;
+
+// Future Tense Section
+anaLmajiInput.value = `ghan${verb}`;
+ntaLmajiInput.value = `ghat${verb}`;
+ntiLmajiInput.value = `ghat${verb}i`;
+howaLmajiInput.value = `ghay${verb}`;
+hiaLmajiInput.value = `ghat${verb}`;
+hnaLmajiInput.value = `ghan${verb}o`;
+ntomaLmajiInput.value = `ghat${verb}o`;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+});
+
+
+    // Handle form submission
+    document.getElementById('verbData').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form from submitting normally
+
+      // About Verb Section
+var word = document.getElementById('word').value.toLowerCase().replace(/\s+/g, '');
+var type = 'verb';
+var translation = document.getElementById('translation').value.toLowerCase().replace(/\s+/g, '');
+var phonetic = document.getElementById('phonetic').value.toLowerCase().replace(/\s+/g, '');
+var example = document.getElementById('example').value;
+var details = document.getElementById('details').value;
+
+// Past Tense Section
+var anaFat = document.getElementById('ana-fat').value.toLowerCase().replace(/\s+/g, '');
+var ntaFat = document.getElementById('nta-fat').value.toLowerCase().replace(/\s+/g, '');
+var ntiFat = document.getElementById('nti-fat').value.toLowerCase().replace(/\s+/g, '');
+var howaFat = document.getElementById('howa-fat').value.toLowerCase().replace(/\s+/g, '');
+var hiaFat = document.getElementById('hia-fat').value.toLowerCase().replace(/\s+/g, '');
+var hnaFat = document.getElementById('hna-fat').value.toLowerCase().replace(/\s+/g, '');
+var ntomaFat = document.getElementById('ntoma-fat').value.toLowerCase().replace(/\s+/g, '');
+
+// Present Tense Section
+var anaDaba = document.getElementById('ana-daba').value.toLowerCase().replace(/\s+/g, '');
+var ntaDaba = document.getElementById('nta-daba').value.toLowerCase().replace(/\s+/g, '');
+var ntiDaba = document.getElementById('nti-daba').value.toLowerCase().replace(/\s+/g, '');
+var howaDaba = document.getElementById('howa-daba').value.toLowerCase().replace(/\s+/g, '');
+var hiaDaba = document.getElementById('hia-daba').value.toLowerCase().replace(/\s+/g, '');
+var hnaDaba = document.getElementById('hna-daba').value.toLowerCase().replace(/\s+/g, '');
+var ntomaDaba = document.getElementById('ntoma-daba').value.toLowerCase().replace(/\s+/g, '');
+
+// Future Tense Section
+var anaLmaji = document.getElementById('ana-lmaji').value.toLowerCase().replace(/\s+/g, '');
+var ntaLmaji = document.getElementById('nta-lmaji').value.toLowerCase().replace(/\s+/g, '');
+var ntiLmaji = document.getElementById('nti-lmaji').value.toLowerCase().replace(/\s+/g, '');
+var howaLmaji = document.getElementById('howa-lmaji').value.toLowerCase().replace(/\s+/g, '');
+var hiaLmaji = document.getElementById('hia-lmaji').value.toLowerCase().replace(/\s+/g, '');
+var hnaLmaji = document.getElementById('hna-lmaji').value.toLowerCase().replace(/\s+/g, '');
+var ntomaLmaji = document.getElementById('ntoma-lmaji').value.toLowerCase().replace(/\s+/g, '');
+
+
+      var word_id = `${word[0]}-${type}-${word}-${translation}`;
+      
+
+      // Push the data to Firebase Realtime Database
+      database.ref(`darija-words/${word_id}`).set({
+    "word": word,
+    "translation": translation,
+    "type" : type,
+    "phonetic": phonetic,
+    "example": example,
+    "details": details,
+    "past-tense": {
+        "ana": anaFat,
+        "nta": ntaFat,
+        "nti": ntiFat,
+        "howa": howaFat,
+        "hia": hiaFat,
+        "hna": hnaFat,
+        "ntoma": ntomaFat
+    },
+    "present-tense": {
+        "ana": anaDaba,
+        "nta": ntaDaba,
+        "nti": ntiDaba,
+        "howa": howaDaba,
+        "hia": hiaDaba,
+        "hna": hnaDaba,
+        "ntoma": ntomaDaba
+    },
+    "future-tense": {
+        "ana": anaLmaji,
+        "nta": ntaLmaji,
+        "nti": ntiLmaji,
+        "howa": howaLmaji,
+        "hia": hiaLmaji,
+        "hna": hnaLmaji,
+        "ntoma": ntomaLmaji
+    }
+        
+
+      }).then(function() {
+        if(id !== ''){
+          window.location.href = `verb.html?id=${id}`;
+        }
+        else{
+         alert('Data stored successfully!');
+        }
+      }).catch(function(error) {
+        console.error('Error storing data:', error);
+      });
+
+      // Clear the form
+      document.getElementById('verbData').reset();
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+*{
+    font-family: 'Poppins', sans-serif;
+}
+
+i{
+    font-size: 25px;
+    color: black;
+    padding: 5px;
+    border-radius: 100px;
+    transition: all .3s;
+}
+
+i:hover{
+    background-color: rgb(248, 248, 248);
+    cursor: pointer;
+}
+a{
+    color: white;
+    cursor: auto;
+}
+h1{
+    text-align: center;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: solid 1px black;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  gap: 4px;
+  width: 90%;
+
+}
+label{
+    width: 50%;
+    text-align: start;
+}
+input{
+    width: 50%;
+    text-align: center;
+}
+
+
+
+
+#tenses{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+
+}
+
+#tenses div{
+    width: 100%;
+}
+
+
+button {
+    border:  solid 1px black;
+    background-color: white;
+    padding: 10px;
+    border-radius: 20px;
+    transition: all .3s;
+
+}
+button:hover{
+    color: white;
+    background-color: black;
+    transition: all .3s;
+}
+
+    </style>
+</body>
+</html>

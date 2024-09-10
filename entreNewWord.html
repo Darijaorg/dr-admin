@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Store darija word</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="index.html"><i class="fa fa-arrow-left"></i> َ</a>
+  
+
+  <h1>Store darija word in the Database</h1>
+
+  <form id="dataForm">
+    <label for="word">Enter the word (Darija):</label>
+    <input type="text" id="word" name="word" required>
+    <br>
+    <label for="translation">Enter the translation (English):</label>
+    <input type="text" id="translation" name="translation" required>
+    <br>
+    <label for="type">Enter the type (e.g., verb, adj , noun):</label>
+    <input type="text" id="type" name="type" required>
+    <br>
+    <label for="phonetic">phonetic (optional):</label>
+    <input type="text" id="phonetic" name="phonetic" value="-">
+    <br>
+    <label for="example">Enter an example (optional):</label>
+    <input type="text" id="example" name="example" value="-">
+    <br>
+    <label for="details">Enter details (optional):</label>
+    <input type="text" id="details" name="details" value="-">
+    <br>
+    
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    
+ var isLogin = localStorage.getItem('isLogin');
+ if(isLogin !== 'true'){
+     window.location.href = `login.html`;
+ }
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBOGC8qinBmX_F4msMrrxV3VgbwYt6mtg8",
+      authDomain: "darija2024-database.firebaseapp.com",
+      databaseURL: "https://darija2024-database-default-rtdb.firebaseio.com",
+      projectId: "darija2024-database",
+      storageBucket: "darija2024-database.appspot.com",
+      messagingSenderId: "621215461163",
+      appId: "1:621215461163:web:d594741683e99c742fdf6e",
+      measurementId: "G-VYFCV3GLZN"
+    };
+  
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Reference to the Realtime Database
+    const database = firebase.database();
+  
+
+    // Handle form submission
+    document.getElementById('dataForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form from submitting normally
+
+      var word = document.getElementById('word').value.toLowerCase().replace(/\s+/g, '');
+      console.log(word);
+
+      var translation = document.getElementById('translation').value.toLowerCase().replace(/\s+/g, '');
+      console.log(translation);
+
+      var type = document.getElementById('type').value.toLowerCase().replace(/\s+/g, '');
+      console.log(type);
+
+      var phonetic = document.getElementById('phonetic').value.toLowerCase().replace(/\s+/g, '');
+      var example = document.getElementById('example').value;
+      var details = document.getElementById('details').value;
+
+
+      var word_id = `${word[0]}-${type}-${word}-${translation}`;
+      
+      
+
+      // Push the data to Firebase Realtime Database
+      database.ref(`darija-words/${word_id}`).set({
+        "word": word,
+    "translation": translation,
+    "type" : type,
+    "phonetic": phonetic,
+    "example": example,
+    "details": details,
+
+      }).then(function() {
+        if(type === 'verb'){
+        window.location.href = `addNewVerb.html?id=${word_id}`;
+
+      }
+      else if(type === 'noun'){
+        window.location.href = `addNewNoun.html?word=${encodeURIComponent(word)}&translation=${encodeURIComponent(translation)}&type=${encodeURIComponent(type)}&phonetic=${encodeURIComponent(phonetic)}&example=${encodeURIComponent(example)}&details=${encodeURIComponent(details)}`;
+
+
+      }
+      else{
+        alert('Data stored successfully!');
+
+      }
+      }).catch(function(error) {
+        console.error('Error storing data:', error);
+      });
+
+      // Clear the form
+      document.getElementById('dataForm').reset();
+    });
+  
+
+   
+  
+  </script>
+</body>
+</html>

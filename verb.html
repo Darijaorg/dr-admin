@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="loader.css">
+    
+</head>
+<body>
+    <a href="darijaWords.html"><i class="fa fa-arrow-left"></i> َ</a>
+
+
+<div class="loader-section">
+    <div class="loader" id="loader"></div>
+
+</div>
+
+<form id="verbData">
+    <div class="edit-div">
+        <p id="editBtn"><i class="fas fa-edit edit-icon"></i></p>
+        <p id="deleteBtn"><i class="fas fa-trash"></i></p>
+    </div>
+    <h1 id="title">verbe</h1>
+
+    <div id="aboutForm">
+        <h3>about verb</h3>
+        <p id="word" name="word">word content here</p>
+        
+        <p id="translation" name="translation">translation content here</p>
+        
+        <p id="phonetic" name="phonetic">-</p>
+        
+        <p id="example" name="example">-</p>
+        
+        <p id="details" name="details">-</p>
+        
+    </div>
+
+    <section id="tenses">
+        <div class="past">
+            <h3>past/lifat</h3>
+            <p id="ana-fat">ana-fat content here</p>
+            <p id="nta-fat">nta-fat content here</p>
+            <p id="nti-fat">nti-fat content here</p>
+            <p id="howa-fat">howa-fat content here</p>
+            <p id="hia-fat">hia-fat content here</p>
+            <p id="hna-fat">hna-fat content here</p>
+            <p id="ntoma-fat">ntoma-fat content here</p>
+        </div>
+
+        <div class="present">
+            <h3>present/daba</h3>
+            <p id="ana-daba">ana-daba content here</p>
+            <p id="nta-daba">nta-daba content here</p>
+            <p id="nti-daba">nti-daba content here</p>
+            <p id="howa-daba">howa-daba content here</p>
+            <p id="hia-daba">hia-daba content here</p>
+            <p id="hna-daba">hna-daba content here</p>
+            <p id="ntoma-daba">ntoma-daba content here</p>
+        </div>
+
+        <div class="future">
+            <h3>future/lmaji</h3>
+            <p id="ana-lmaji">ana-lmaji content here</p>
+            <p id="nta-lmaji">nta-lmaji content here</p>
+            <p id="nti-lmaji">nti-lmaji content here</p>
+            <p id="howa-lmaji">howa-lmaji content here</p>
+            <p id="hia-lmaji">hia-lmaji content here</p>
+            <p id="hna-lmaji">hna-lmaji content here</p>
+            <p id="ntoma-lmaji">ntoma-lmaji content here</p>
+        </div>
+    </section>
+</form>
+
+    
+  
+  <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+*{
+    font-family: 'Poppins', sans-serif;
+}
+
+.fa-arrow-left{
+    position: sticky;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    font-size: 25px;
+    color: black;
+    
+}
+
+#title{
+    text-align: center;
+
+}
+.edit-div{
+    display: flex;
+    gap: 2px;
+    font-size: 25px;
+    justify-content: flex-end;
+    cursor: pointer;
+    transition: all.3s;
+
+}
+
+.edit-div p:hover{
+    color: red;
+    transition: all.3s;
+}
+#verbData{
+    display: flex;
+    flex-direction: column;
+    border: solid 1px black;
+    padding: 10px;
+    border-radius: 20px;
+}
+label{
+    text-align: start;
+    color: red;
+}
+p{
+    text-align: start;
+    font-weight: 700;
+
+}
+h3{
+    padding: 10px;
+    border: solid 1px black;
+    text-align: center;
+}
+
+span{
+    color: red;
+}
+
+
+  </style>
+      
+      <script>
+         var isLogin = localStorage.getItem('isLogin');
+        if(isLogin !== 'true'){
+            window.location.href = `login.html`;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+         // DOM
+         
+         const title = document.getElementById('title')
+         const loader = document.getElementById('loader');
+        const container = document.getElementById('verbData');
+
+          //
+       // About verb section
+const wordP = document.getElementById('word');
+const translationP = document.getElementById('translation');
+const phoneticP = document.getElementById('phonetic');
+const exampleP = document.getElementById('example');
+const detailsP = document.getElementById('details');
+
+// Past tense section
+const anaFatP = document.getElementById('ana-fat');
+const ntaFatP = document.getElementById('nta-fat');
+const ntiFatP = document.getElementById('nti-fat');
+const howaFatP = document.getElementById('howa-fat');
+const hiaFatP = document.getElementById('hia-fat');
+const hnaFatP = document.getElementById('hna-fat');
+const ntomaFatP = document.getElementById('ntoma-fat');
+
+// Present tense section
+const anaDabaP = document.getElementById('ana-daba');
+const ntaDabaP = document.getElementById('nta-daba');
+const ntiDabaP = document.getElementById('nti-daba');
+const howaDabaP = document.getElementById('howa-daba');
+const hiaDabaP = document.getElementById('hia-daba');
+const hnaDabaP = document.getElementById('hna-daba');
+const ntomaDabaP = document.getElementById('ntoma-daba');
+
+// Future tense section
+const anaLmajiP = document.getElementById('ana-lmaji');
+const ntaLmajiP = document.getElementById('nta-lmaji');
+const ntiLmajiP = document.getElementById('nti-lmaji');
+const howaLmajiP = document.getElementById('howa-lmaji');
+const hiaLmajiP = document.getElementById('hia-lmaji');
+const hnaLmajiP = document.getElementById('hna-lmaji');
+const ntomaLmajiP = document.getElementById('ntoma-lmaji');
+
+// Now you can manipulate these elements, e.g., setting text content
+// Example: wordP.textContent = "Some new content";
+
+          //
+        
+
+         const firebaseConfig = {
+      apiKey: "AIzaSyBOGC8qinBmX_F4msMrrxV3VgbwYt6mtg8",
+      authDomain: "darija2024-database.firebaseapp.com",
+      databaseURL: "https://darija2024-database-default-rtdb.firebaseio.com",
+      projectId: "darija2024-database",
+      storageBucket: "darija2024-database.appspot.com",
+      messagingSenderId: "621215461163",
+      appId: "1:621215461163:web:d594741683e99c742fdf6e",
+      measurementId: "G-VYFCV3GLZN"
+    };
+
+
+     // Initialize Firebase
+     const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database(app);
+
+        // Reference to your data in Firebase
+        const wordRef = database.ref('darija-words');
+
+        // Fetch data from Firebase
+        wordRef.once('value', (snapshot) => {
+            const data = snapshot.val();
+            const wordData = data[id]
+
+
+
+            document.title = `${wordData['word']} | "verb"`;
+
+title.textContent =  `${wordData['word']}`
+wordP.textContent = `word : ${wordData['word']}`;
+translationP.textContent = `translation : ${wordData['translation']}`;
+phoneticP.textContent = `phonetic : ${wordData['phonetic']}`;
+exampleP.textContent = `example : ${wordData['example']}`;
+detailsP.textContent = `details : ${wordData['details']}`;
+// Dynamic function to wrap specified number of letters from the start and end of a word
+function wrapLetters(word, numStart, numEnd) {
+    const length = word.length;
+    const startPart = `<span>${word.slice(0, numStart)}</span>`;
+    const middlePart = word.slice(numStart, length - numEnd);
+    const endPart = `<span>${word.slice(length - numEnd)}</span>`;
+    return `${startPart}${middlePart}${endPart}`;
+}
+
+function wrapAnyLetter(word, ...indices) {
+    let result = '';
+    for (let i = 0; i < word.length; i++) {
+        if (indices.includes(i)) {
+            result += `<span>${word[i]}</span>`;
+        } else {
+            result += word[i];
+        }
+    }
+    return result;
+}
+
+// Update past tense (wrap last 2 letters)
+anaFatP.innerHTML = `ana ${wrapLetters(wordData['past-tense']['ana'], 0, 1)}`;
+ntaFatP.innerHTML = `nta ${wrapLetters(wordData['past-tense']['nta'], 0, 2)}`;
+ntiFatP.innerHTML = `nti ${wrapLetters(wordData['past-tense']['nti'], 0, 2)}`;
+
+howaFatP.innerHTML = `howa ${wrapLetters(wordData['past-tense']['howa'], 0 , 0)}`;
+hiaFatP.innerHTML = `hia ${wrapLetters(wordData['past-tense']['hia'], 0, 1)}`;
+
+/*test
+howaFatP.innerHTML = `howa ${wrapAnyLetter(wordData['past-tense']['howa'], 1)}`;
+hiaFatP.innerHTML = `hia ${wrapAnyLetter(wordData['past-tense']['hia'], 1, wordData['past-tense']['hia'].length - 1)}`;
+*/
+hnaFatP.innerHTML = `hna ${wrapLetters(wordData['past-tense']['hna'], 0, 2)}`;
+ntomaFatP.innerHTML = `ntoma ${wrapLetters(wordData['past-tense']['ntoma'], 0, 2)}`;
+
+// Update present tense (wrap first 3 and last 1 letters)
+anaDabaP.innerHTML = `ana ${wrapLetters(wordData['present-tense']['ana'], 3, 0)}`;
+ntaDabaP.innerHTML = `nta ${wrapLetters(wordData['present-tense']['nta'], 3, 0)}`;
+ntiDabaP.innerHTML = `nti ${wrapLetters(wordData['present-tense']['nti'], 3, 1)}`;
+howaDabaP.innerHTML = `howa ${wrapLetters(wordData['present-tense']['howa'], 3, 0)}`;
+hiaDabaP.innerHTML = `hia ${wrapLetters(wordData['present-tense']['hia'], 3, 0)}`;
+hnaDabaP.innerHTML = `hna ${wrapLetters(wordData['present-tense']['hna'], 3, 1)}`;
+ntomaDabaP.innerHTML = `ntoma ${wrapLetters(wordData['present-tense']['ntoma'], 3, 1)}`;
+
+// Update future tense (wrap first 3 and last 1 letters)
+anaLmajiP.innerHTML = `ana ${wrapLetters(wordData['future-tense']['ana'], 4, 0)}`;
+ntaLmajiP.innerHTML = `nta ${wrapLetters(wordData['future-tense']['nta'], 4, 0)}`;
+ntiLmajiP.innerHTML = `nti ${wrapLetters(wordData['future-tense']['nti'], 4, 1)}`;
+howaLmajiP.innerHTML = `howa ${wrapLetters(wordData['future-tense']['howa'], 4, 0)}`;
+hiaLmajiP.innerHTML = `hia ${wrapLetters(wordData['future-tense']['hia'], 4, 0)}`;
+hnaLmajiP.innerHTML = `hna ${wrapLetters(wordData['future-tense']['hna'], 4, 1)}`;
+ntomaLmajiP.innerHTML = `ntoma ${wrapLetters(wordData['future-tense']['ntoma'], 4, 1)}`;
+
+        loader.style.display = 'none'
+        container.style.display = 'flex'
+            
+            
+        });
+
+
+        $('#editBtn').on('click' , function(){
+        window.location.href = `addNewVerb.html?id=${id}`;
+       });
+
+     $('#deleteBtn').on('click' , function(){
+
+        database.ref(`darija-words/${id}`).remove();
+        window.location.href = `darijaWords.html?id=${id}`;
+
+           
+
+     })
+
+      </script>
+</body>
+
