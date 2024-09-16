@@ -22,10 +22,10 @@
 
     </div>
   <div id="btns">
-    <button id="nounsBtn" >nouns</button>
-    <button id="verbsBtn">verbs</button>
-    <button id="pronounsBtn">pronouns</button>
-    <button id="adjsBtn">adjs</button>
+    <button  class="btn" id="nounsBtn">nouns</button>
+    <button  class="btn" id="verbsBtn">verbs</button>
+    <button  class="btn" id="pronounsBtn">pronouns</button>
+    <button  class="btn" id="adjsBtn">adjs</button>
   </div>
 
     <section class="words" id="words">
@@ -112,7 +112,15 @@ button{
 
 }
 
-
+#btns{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.btn{
+width: 80px;
+}
     </style>
 
     <script>
