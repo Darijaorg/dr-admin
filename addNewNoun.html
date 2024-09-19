@@ -16,14 +16,16 @@
   <h1>Store darija noun in the Database</h1>
 
   <form id="dataForm">
+    
+   
     <label for="word">Enter the word (Darija):</label>
-    <input type="text" id="word" name="word" required readonly>
+    <input type="text" id="word" name="word" required >
     <br>
     <label for="translation">Enter the translation (English):</label>
-    <input type="text" id="translation" name="translation" required readonly>
+    <input type="text" id="translation" name="translation" required>
     <br>
     <label for="type">Enter the type (e.g., verb, adj , noun):</label>
-    <input type="text" id="type" name="type" required readonly>
+    <input type="text" id="type" name="type" required>
     <br>
     <label for="phonetic">phonetic (optional):</label>
     <input type="text" id="phonetic" name="phonetic" value="-">
@@ -43,7 +45,65 @@
     <label for="plural">plural of the noun :</label>
     <input type="text" id="plural" name="plural" value="-" required>
     <br>
+    <h3>prounouns/dyal</h3>
+    <h4>singular</h4>
     
+    <div id="pronouns">
+<label for="my">dyali/my</label>
+<input type="text" id="my" name="my" value="-"><br>
+
+<label for="your-sm">dyalek/your-m</label>
+<input type="text" id="your-sm" name="your-sm" value="-"><br>
+
+<label for="your-sf">dyaleki/your-f</label>
+<input type="text" id="your-sf" name="your-sf" value="-"><br>
+
+<label for="his">dyalo/his</label>
+<input type="text" id="his" name="his" value="-"><br>
+
+<label for="her">dyala/her</label>
+<input type="text" id="her" name="her" value="-"><br>
+
+<label for="our">dyalna/our</label>
+<input type="text" id="our" name="our" value="-"><br>
+
+<label for="your-pm">dyalkom/your-p</label>
+<input type="text" id="your-pm" name="your-pm" value="-"><br>
+
+<label for="their">dyalhom/their</label>
+<input type="text" id="their" name="their" value="-"><br>
+
+
+
+    </div>
+
+    <h4>plural</h4>
+    <div id="plural-pronouns">
+      <label for="plural-my">dyali/my</label>
+      <input type="text" id="plural-my" name="plural-my" value="-"><br>
+  
+      <label for="plural-your-sm">dyalek/your-m</label>
+      <input type="text" id="plural-your-sm" name="plural-your-sm" value="-"><br>
+  
+      <label for="plural-your-sf">dyaleki/your-f</label>
+      <input type="text" id="plural-your-sf" name="plural-your-sf" value="-"><br>
+  
+      <label for="plural-his">dyalo/his</label>
+      <input type="text" id="plural-his" name="plural-his" value="-"><br>
+  
+      <label for="plural-her">dyala/her</label>
+      <input type="text" id="plural-her" name="plural-her" value="-"><br>
+  
+      <label for="plural-our">dyalna/our</label>
+      <input type="text" id="plural-our" name="plural-our" value="-"><br>
+  
+      <label for="plural-your-pm">dyalkom/your-p</label>
+      <input type="text" id="plural-your-pm" name="plural-your-pm" value="-"><br>
+  
+      <label for="plural-their">dyalhom/their</label>
+      <input type="text" id="plural-their" name="plural-their" value="-"><br>
+  </div>
+
     <button type="submit">Submit</button>
   </form>
 
@@ -97,6 +157,8 @@ document.getElementById("gender").value = genderValue || "-";
 document.getElementById("singular").value = singularValue || "-";
 document.getElementById("plural").value = pluralValue || "-";
 
+updateNounPronouns(wordValue);
+updatePluralNounPronouns(pluralValue);
 
     // Handle form submission
     document.getElementById('dataForm').addEventListener('submit', function(event) {
@@ -121,7 +183,15 @@ document.getElementById("plural").value = pluralValue || "-";
 
       var word_id = `${word[0]}-${type}-${word}-${translation}`;
       
-      
+var myValue = document.getElementById('my').value;
+var yourSmValue = document.getElementById('your-sm').value;
+var yourSfValue = document.getElementById('your-sf').value;
+var hisValue = document.getElementById('his').value;
+var herValue = document.getElementById('her').value;
+var ourValue = document.getElementById('our').value;
+var yourPmValue = document.getElementById('your-pm').value;
+var theirValue = document.getElementById('their').value;
+
 
       // Push the data to Firebase Realtime Database
       database.ref(`darija-words/${word_id}`).set({
@@ -133,11 +203,34 @@ document.getElementById("plural").value = pluralValue || "-";
     "details": details,
     "gender" : gendre,
     "singular" : singular,
-    "plural" : plural
+    "plural" : plural , 
+    "prounouns" : {
+      "my": myValue,
+      "your-sm": yourSmValue,
+      "your-sf": yourSfValue,
+      "his": hisValue,
+      "her": herValue,
+      "our": ourValue,
+      "your-pm": yourPmValue,
+      "their": theirValue
+    },
+    "prounouns-plural":{
+      "my": document.getElementById('plural-my').value,
+      "your-sm": document.getElementById('plural-your-sm').value,
+      "your-sf": document.getElementById('plural-your-sf').value,
+      "his": document.getElementById('plural-his').value,
+      "her": document.getElementById('plural-her').value,
+      "our": document.getElementById('plural-our').value,
+      "your-pm": document.getElementById('plural-your-pm').value,
+      "their": document.getElementById('plural-their').value
+    }
+
 
       }).then(function() {
         
-        window.location.href = `darijaWords.html`;
+       
+        window.location.href = `noun.html?id=${word_id}`;
+
 
 
       }).catch(function(error) {
@@ -150,7 +243,56 @@ document.getElementById("plural").value = pluralValue || "-";
   
 
    
-  
+document.getElementById('word').addEventListener('change', function(event){
+ var noun = event.target.value
+
+ updateNounPronouns(noun)  ;
+
+})
+
+
+document.getElementById('plural').addEventListener('change', function(event){
+  var noun = event.target.value
+
+updatePluralNounPronouns(noun)  ;
+})
+
+
+function updateNounPronouns(noun) {
+    document.getElementById("my").value = noun + 'i';         // dyali/my
+    document.getElementById("your-sm").value = noun + 'ek';    // dyalek/your-m
+    document.getElementById("your-sf").value = noun + 'eki';   // dyaleki/your-f
+    document.getElementById("his").value = noun + 'o';         // dyalo/his
+    document.getElementById("her").value = noun + 'ha';         // dyala/her
+    document.getElementById("our").value = noun + 'na';        // dyalna/our
+    document.getElementById("your-pm").value = noun + 'kom';   // dyalkom/your-p
+    document.getElementById("their").value = noun + 'hom';     // dyalhom/their
+}
+
+
+
+function updatePluralNounPronouns(noun) {
+    document.getElementById("plural-my").value = noun + 'i';         
+    document.getElementById("plural-your-sm").value = noun + 'ek';   
+    document.getElementById("plural-your-sf").value = noun + 'eki';  
+    document.getElementById("plural-his").value = noun + 'o';       
+    document.getElementById("plural-her").value = noun + 'ha';       
+    document.getElementById("plural-our").value = noun + 'na';       
+    document.getElementById("plural-your-pm").value = noun + 'kom';  
+    document.getElementById("plural-their").value = noun + 'hom';    
+}
+
+
   </script>
+
+  <style>
+    #pronouns , #plural-pronouns{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  </style>
 </body>
 </html>

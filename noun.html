@@ -39,6 +39,68 @@
 
 
 </div>
+
+
+<div class="prounouns">
+    <h4>singular</h4>
+    <label for="my">dyali/my</label>
+    <p type="text" id="my" name="my" value="-"></p>
+    <br>
+    <label for="your-sm">dyalek/your-m</label>
+    <p type="text" id="your-sm" name="your-sm" value="-"></p>
+    <br>
+    <label for="your-sf">dyaleki/your-f</label>
+    <p type="text" id="your-sf" name="your-sf" value="-"></p>
+    <br>
+    <label for="his">dyalo/his</label>
+    <p type="text" id="his" name="his" value="-"></p>
+    <br>
+    <label for="her">dyala/her</label>
+    <p type="text" id="her" name="her" value="-"></p>
+    <br>
+    <label for="our">dyalna/our</label>
+    <p type="text" id="our" name="our" value="-"></p>
+    <br>
+    <label for="your-pm">dyalkom/your-p</label>
+    <p type="text" id="your-pm" name="your-pm" value="-"></p>
+    <br>
+    <label for="their">dyalhom/their</label>
+    <p type="text" id="their" name="their" value="-"></p>
+    <br>
+</div>
+
+
+<div class="prounouns">
+    <h4>plural</h4>
+    <label for="plural-my">dyali/my</label>
+    <p type="text" id="plural-my" name="my" value="-"></p>
+    <br>
+    <label for="plural-your-sm">dyalek/your-m</label>
+    <p type="text" id="plural-your-sm" name="your-sm" value="-"></p>
+    <br>
+    <label for="plural-your-sf">dyaleki/your-f</label>
+    <p type="text" id="plural-your-sf" name="your-sf" value="-"></p>
+    <br>
+    <label for="plural-his">dyalo/his</label>
+    <p type="text" id="plural-his" name="his" value="-"></p>
+    <br>
+    <label for="plural-her">dyala/her</label>
+    <p type="text" id="plural-her" name="her" value="-"></p>
+    <br>
+    <label for="plural-our">dyalna/our</label>
+    <p type="text" id="plural-our" name="our" value="-"></p>
+    <br>
+    <label for="plural-your-pm">dyalkom/your-p</label>
+    <p type="text" id="plural-your-pm" name="your-pm" value="-"></p>
+    <br>
+    <label for="plural-their">dyalhom/their</label>
+    <p type="text" id="plural-their" name="their" value="-"></p>
+    <br>
+</div>
+
+
+
+
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 *{
@@ -92,6 +154,22 @@ p:hover{
     transition: all .3s;
 }
 
+.prounouns{
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    padding: 10px;
+    border-radius: 10px;
+    border: solid 1px black;
+    margin-top: 10px;
+}
+
+
+.prounouns p{
+    margin: 0;
+}
+
+
 
 </style>
 
@@ -143,31 +221,53 @@ p:hover{
         const wordRef = database.ref('darija-words');
          var editUrl = ''
         // Fetch data from Firebase
-        wordRef.once('value', (snapshot) => {
-            const data = snapshot.val();
-            const wordData = data[id]
+  // Fetch data from Firebase
+wordRef.once('value', (snapshot) => {
+    const data = snapshot.val();
+    const wordData = data[id];
 
-            console.log(wordData)
+    console.log(wordData);
 
-            document.title = `${wordData['word']} | ${wordData['type']}`;
-            title.textContent = wordData['word']
-            wordP.textContent = `word : ${wordData['word']}`;
-            typeP.textContent = `type : ${wordData['type']}`;
-            translationP.textContent = `translation : ${wordData['translation']}`;
-            phoneticP.textContent = `phonetic : ${wordData['phonetic']}`;
-            exampleP.textContent = `example : ${wordData['example']}`;
-            genderP.textContent = `gender : ${wordData['gender']}`;
-            singularP.textContent = `singular : ${wordData['singular']}`;
-            pluralP.textContent = `plural : ${wordData['plural']}`;
-            detailsP.textContent = `details : ${wordData['details']}`;
+    // Populate basic details
+    document.title = `${wordData['word']} | ${wordData['type']}`;
+    title.textContent = wordData['word'];
+    wordP.textContent = `word : ${wordData['word']}`;
+    typeP.textContent = `type : ${wordData['type']}`;
+    translationP.textContent = `translation : ${wordData['translation']}`;
+    phoneticP.textContent = `phonetic : ${wordData['phonetic']}`;
+    exampleP.textContent = `example : ${wordData['example']}`;
+    genderP.textContent = `gender : ${wordData['gender']}`;
+    singularP.textContent = `singular : ${wordData['singular']}`;
+    pluralP.textContent = `plural : ${wordData['plural']}`;
+    detailsP.textContent = `details : ${wordData['details']}`;
 
-            editUrl = `addNewNoun.html?word=${encodeURIComponent(wordData['word'])}&translation=${encodeURIComponent(wordData['translation'])}&type=${encodeURIComponent(wordData['type'])}&phonetic=${encodeURIComponent(wordData['phonetic'])}&example=${encodeURIComponent(wordData['example'])}&gender=${encodeURIComponent(wordData['gender'])}&singular=${encodeURIComponent(wordData['singular'])}&plural=${encodeURIComponent(wordData['plural'])}&details=${encodeURIComponent(wordData['details'])}`;
+    editUrl = `addNewNoun.html?word=${encodeURIComponent(wordData['word'])}&translation=${encodeURIComponent(wordData['translation'])}&type=${encodeURIComponent(wordData['type'])}&phonetic=${encodeURIComponent(wordData['phonetic'])}&example=${encodeURIComponent(wordData['example'])}&gender=${encodeURIComponent(wordData['gender'])}&singular=${encodeURIComponent(wordData['singular'])}&plural=${encodeURIComponent(wordData['plural'])}&details=${encodeURIComponent(wordData['details'])}`;
+ 
 
-        loader.style.display = 'none'
-        container.style.display = 'grid'
-            
-            
-        });
+    // Populate singular pronouns
+    document.getElementById('my').textContent = wordData['prounouns']['my'];
+    document.getElementById('your-sm').textContent = wordData['prounouns']['your-sm'];
+    document.getElementById('your-sf').textContent = wordData['prounouns']['your-sf'];
+    document.getElementById('his').textContent = wordData['prounouns']['his'];
+    document.getElementById('her').textContent = wordData['prounouns']['her'];
+    document.getElementById('our').textContent = wordData['prounouns']['our'];
+    document.getElementById('your-pm').textContent = wordData['prounouns']['your-pm'];
+    document.getElementById('their').textContent = wordData['prounouns']['their'];
+
+    // Populate plural pronouns
+    document.getElementById('plural-my').textContent = wordData['prounouns-plural']['my'];
+    document.getElementById('plural-your-sm').textContent = wordData['prounouns-plural']['your-sm'];
+    document.getElementById('plural-your-sf').textContent = wordData['prounouns-plural']['your-sf'];
+    document.getElementById('plural-his').textContent = wordData['prounouns-plural']['his'];
+    document.getElementById('plural-her').textContent = wordData['prounouns-plural']['her'];
+    document.getElementById('plural-our').textContent = wordData['prounouns-plural']['our'];
+    document.getElementById('plural-your-pm').textContent = wordData['prounouns-plural']['your-pm'];
+    document.getElementById('plural-their').textContent = wordData['prounouns-plural']['their'];
+
+    // Hide loader and display content
+    loader.style.display = 'none';
+    container.style.display = 'grid';
+});
 
 
        $('#editBtn').on('click' , function(){
