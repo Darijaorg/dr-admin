@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <form id="data">
+        <label for="idInput">Enter the ID of the word you want to edit:</label>
+        <input type="text" id="idInput" placeholder="Enter word ID">
+        
+        <div id="editDiv">
+            <p>Word fetched from the database:</p>
+            <label for="editInput">Edit the word:</label>
+            <input type="text" id="editInput" placeholder="Enter new word">
+        </div>
+        
+        <button id="fetchWordBtn" type="button">Fetch Word</button>
+        <button id="submitBtn" type="submit">Submit Updated Word</button>
+    </form>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        form {
+            gap: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #editDiv {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        input {
+            width: 300px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            background: rgb(221, 219, 219);
+            text-align: center;
+        }
+        button {
+            text-decoration: none;
+            color: black;
+            border: solid 1px black;
+            padding: 10px;
+            margin: 5px;
+            width: 8rem;
+            text-align: center;
+            border-radius: 20px;
+            transition: all .3s;
+            background-color: white;
+        }
+        button:hover {
+            color: white;
+            background-color: black;
+            transition: all .3s;
+        }
+    </style>
+
+
+
+<script>
+
+const firebaseConfig = {
+            apiKey: "AIzaSyBOGC8qinBmX_F4msMrrxV3VgbwYt6mtg8",
+            authDomain: "darija2024-database.firebaseapp.com",
+            databaseURL: "https://darija2024-database-default-rtdb.firebaseio.com",
+            projectId: "darija2024-database",
+            storageBucket: "darija2024-database.appspot.com",
+            messagingSenderId: "621215461163",
+            appId: "1:621215461163:web:d594741683e99c742fdf6e",
+            measurementId: "G-VYFCV3GLZN"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database(app);
+
+
+
+
+      var fetchWordBtn = document.getElementById('fetchWordBtn');
+
+      fetchWordBtn.addEventListener('click', function() {
+        var id = document.getElementById('idInput').value;
+        var ref = database.ref('darija-words/' + id  );
+        ref.once('value', function(snapshot) {
+          var word = snapshot.val();
+          document.getElementById('editDiv').style.display = 'flex';
+          document.getElementById('editInput').value = word;
+        });
+      });
+
+
+
+      var submitBtn = document.getElementById('submitBtn');
+
+// Add event listener to prevent form submission
+submitBtn.addEventListener('click', function(event) {
+    // Prevent form from submitting and refreshing the page
+    event.preventDefault();
+
+    var id = document.getElementById('idInput').value;
+    var newWord = document.getElementById('editInput').value;
+    var ref = database.ref('darija-words/' + id);
+    
+    // Use the correct method to update the data
+    ref.set(newWord)
+     .then(function() {
+        console.log("Data updated successfully");
+        document.getElementById('editDiv').style.display = 'none';
+     })
+     .catch(function(error) {
+        console.error("Error updating data: ", error);
+     });
+});
+</script>
+
+
+</body>
+</html>
