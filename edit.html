@@ -6,9 +6,14 @@
     <title>Edit</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 </head>
 <body>
+    <a href="index.html"><i class="fa fa-arrow-left"></i></a>
+
     <form id="data">
+
         <label for="idInput">Enter the ID of the word you want to edit:</label>
         <input type="text" id="idInput" placeholder="Enter word ID">
         
@@ -27,13 +32,19 @@
         * {
             font-family: 'Poppins', sans-serif;
         }
+        body{
+            height: 100vh;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+        }
         form {
             gap: 10px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+                        align-items: center;
         }
         #editDiv {
             display: none;
@@ -67,11 +78,40 @@
             background-color: black;
             transition: all .3s;
         }
+
+        i{
+            font-size: 25px;
+            position: fixed;
+            top : 0 ; 
+            left: 0 ;
+            padding: 6px;
+            margin: 20px;
+            color: black;
+            border: 1px solid transparent ; 
+            border-radius: 100px;
+            transition:  all .3s ease-in-out;
+
+        }
+
+        i:hover{
+            background-color: rgb(241, 241, 241);
+            transition:  all .3s ease-in-out;
+        }
+
+       
     </style>
 
 
 
 <script>
+
+
+var isLogin = localStorage.getItem('isLogin');
+        if(isLogin !== 'true'){
+            window.location.href = `login.html`;
+        }
+
+
 
 const firebaseConfig = {
             apiKey: "AIzaSyBOGC8qinBmX_F4msMrrxV3VgbwYt6mtg8",
