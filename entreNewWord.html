@@ -34,6 +34,9 @@
     <label for="details">Enter details (optional):</label>
     <input type="text" id="details" name="details" value="-">
     <br>
+    <label for="source">Enter the source of the word (optional):</label>
+    <input type="text" id="source" name="source" value="-">
+    <br>
     
     <button type="submit">Submit</button>
   </form>
@@ -81,6 +84,7 @@
       var phonetic = document.getElementById('phonetic').value.toLowerCase().replace(/\s+/g, '');
       var example = document.getElementById('example').value;
       var details = document.getElementById('details').value;
+      var source = document.getElementById('source').value;
 
 
       var word_id = `${word[0]}-${type}-${word}-${translation}`;
@@ -95,6 +99,7 @@
     "phonetic": phonetic,
     "example": example,
     "details": details,
+    "source": source
 
       }).then(function() {
         if(type === 'verb'){

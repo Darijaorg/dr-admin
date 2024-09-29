@@ -34,7 +34,10 @@
         <label for="details">Enter details (optional):</label>
         <input type="text" id="details" name="details" value="-">
         <br>
-       
+        <label for="source">Enter the source of the word (optional):</label>
+        <input type="text" id="source" name="source" value="-">
+        <br>
+            
       
       </div>
 
@@ -186,6 +189,7 @@ const translationP = document.getElementById('translation');
 const phoneticP = document.getElementById('phonetic');
 const exampleP = document.getElementById('example');
 const detailsP = document.getElementById('details');
+const sourceP = document.getElementById('source').value;
 
 // Past tense section
 const anaFatP = document.getElementById('ana-fat');
@@ -229,6 +233,7 @@ translationP.value = wordData['translation'];
 phoneticP.value = wordData['phonetic'];
 exampleP.value = wordData['example'];
 detailsP.value = wordData['details'];
+sourceP.value = wordData['source'];
 
 // Update past tense
 anaFatP.value = wordData['past-tense']['ana'];
@@ -375,6 +380,8 @@ var translation = document.getElementById('translation').value.toLowerCase().rep
 var phonetic = document.getElementById('phonetic').value.toLowerCase().replace(/\s+/g, '');
 var example = document.getElementById('example').value;
 var details = document.getElementById('details').value;
+var source = document.getElementById('source').value;
+
 
 // Past Tense Section
 var anaFat = document.getElementById('ana-fat').value.toLowerCase().replace(/\s+/g, '');
@@ -415,6 +422,7 @@ var ntomaLmaji = document.getElementById('ntoma-lmaji').value.toLowerCase().repl
     "phonetic": phonetic,
     "example": example,
     "details": details,
+    "source": source ,
     "past-tense": {
         "ana": anaFat,
         "nta": ntaFat,

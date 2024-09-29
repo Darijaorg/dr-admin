@@ -36,6 +36,9 @@
     <label for="details">Enter details (optional):</label>
     <input type="text" id="details" name="details" value="-">
     <br>
+    <label for="source">Enter the source of the word (optional):</label>
+    <input type="text" id="source" name="source" value="-">
+    <br>
     <label for="gender">Gender of the noun :</label>
     <input type="text" id="gender" name="Gender" value="-" required>
     <br>
@@ -142,6 +145,7 @@ const typeValue = params.get('type');
 const phoneticValue = params.get('phonetic');
 const exampleValue = params.get('example');
 const detailsValue = params.get('details');
+// const sourceValue = params.get('source');
 const genderValue = params.get('gender');
 const singularValue = params.get('singular');
 const pluralValue = params.get('plural');
@@ -156,7 +160,7 @@ document.getElementById("details").value = detailsValue || "-";
 document.getElementById("gender").value = genderValue || "-";
 document.getElementById("singular").value = singularValue || "-";
 document.getElementById("plural").value = pluralValue || "-";
-
+// document.getElementById('source').value = sourceValue || "-";
 updateNounPronouns(wordValue);
 updatePluralNounPronouns(pluralValue);
 
@@ -176,6 +180,7 @@ updatePluralNounPronouns(pluralValue);
       var phonetic = document.getElementById('phonetic').value.toLowerCase().replace(/\s+/g, '');
       var example = document.getElementById('example').value;
       var details = document.getElementById('details').value;
+      var source = document.getElementById('source').value;
       var gendre = document.getElementById('gender').value.toLowerCase().replace(/\s+/g, '');
       var plural = document.getElementById('plural').value.toLowerCase().replace(/\s+/g, '');
       var singular = document.getElementById('singular').value.toLowerCase().replace(/\s+/g, '');
@@ -204,6 +209,7 @@ var theirValue = document.getElementById('their').value;
     "gender" : gendre,
     "singular" : singular,
     "plural" : plural , 
+    "source": source ,
     "prounouns" : {
       "my": myValue,
       "your-sm": yourSmValue,
