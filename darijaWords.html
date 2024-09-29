@@ -9,11 +9,14 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
     <link rel="stylesheet" href="loader.css">
+    <link rel="shortcut icon" href="https://i.ibb.co/QpG1Q6n/Darija-logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="words.css">
 
 </head>
 <body>
-    <a href="index.html"><i class="fa fa-arrow-left"></i></a>
+    <a href="index.html"><i class="fa fa-arrow-left"></i> َ</a>
   
     
     <h1 id="title">Darija-database2024</h1>
@@ -21,14 +24,17 @@
         <div class="loader" id="loader"></div>
 
     </div>
-  <div id="btns">
-    <button  class="btn" id="nounsBtn">nouns</button>
-    <button  class="btn" id="verbsBtn">verbs</button>
-    <button  class="btn" id="pronounsBtn">pronouns</button>
-    <button  class="btn" id="adjsBtn">adjs</button>
-  </div>
+
 
     <section class="words" id="words">
+        
+<div id="btns">
+    <button id="nounsBtn" >nouns</button>
+    <button id="verbsBtn">verbs</button>
+    <button id="pronounsBtn">pronouns</button>
+    <button id="adjsBtn">adjs</button>
+    <button id="advsBtn">adverbs</button>
+  </div>
         <div id="nouns">
           <label id="nounsLbl">nouns:</label>
         </div>
@@ -43,92 +49,25 @@
         <div id="adjs">
           <label id="adjsLbl">adjs:</label>
         </div>
+        <div id="adverbs">
+            <label id="adverbsLbl">adverbs:</label>
+          </div>
     </section>
 
 
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
-*{
-    font-family: 'Poppins', sans-serif;
-}
-
-i{
-    font-size: 20px;
-    color: black;
-    padding: 5px;
-    border-radius: 100px;
-    transition: all .3s;
-}
-
-i:hover{
-    background-color: rgb(248, 248, 248);
-    cursor: pointer;
-}
-a{
-    
-    color: white;
-    cursor: auto;
-}
-h1{
-    text-align: center;
-}
-
-.words{
-    display: none;
-    
    
-    
-   
-}
-
-.words div{
-    border: solid 1px black;
-    border-radius: 10px;
-    gap: 5px;
-    padding: 10px;
-    margin: 5px;
-    
-
-}
-p{
-    transition: all .3s;
-    cursor: pointer;
-}
-p:hover{
-    padding: 5px;
-    border: solid 1px black;
-    border-radius: 10px;
-    transition: all .3s;
-}
-
-
-button{
-    background: white;
-    border : solid 1px black;
-    border-radius: 10px;
-    padding: 5px;
-    transition: all .3s ;
-    cursor: pointer;
-
-}
-
-#btns{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-.btn{
-width: 80px;
-}
-    </style>
-
     <script>
+        var isLogin = localStorage.getItem('isLogin');
+        if(isLogin !== 'true'){
+            window.location.href = `login.html`;
+        }
+  
         //DOM
         const nounsDiv = document.getElementById('nouns');
         const verbsDiv = document.getElementById('verbs');
         const pronounsDiv = document.getElementById('pronouns');
         const adjsDiv = document.getElementById('adjs');
+        const advsDiv = document.getElementById('adverbs');
 
         const loader = document.getElementById('loader');
         const container = document.getElementById('words');
@@ -147,6 +86,7 @@ width: 80px;
     var wordsData = [] ;
     var verbs = [];
     var adjs = [];
+    var advs = [];
     var nouns = [];
     var pronouns = [];
 
@@ -174,7 +114,7 @@ width: 80px;
             if(key[2] === 'v'){
                
                 const newElement = document.createElement('p');
-                newElement.textContent = key;
+                newElement.innerHTML = `${key.substring(0 , 6)}-<span>${data[key]['word']}</span>-${data[key]['translation']}`;
                 verbsDiv.appendChild(newElement);
 
 
@@ -184,9 +124,10 @@ width: 80px;
             else if(key[2] ==='n') {
                 
                 const newElement = document.createElement('p');
-                newElement.textContent = key;
+                newElement.innerHTML = `${key.substring(0 , 6)}-<span>${data[key]['word']}</span>-${data[key]['translation']}`;
+
                 nounsDiv.appendChild(newElement);
-                console.log(key)
+
                 nouns.push(key)
                 wordsData.push(key)
 
@@ -195,7 +136,8 @@ width: 80px;
             else if (key[2] === 'p') {
                 
                 const newElement = document.createElement('p');
-                newElement.textContent = key;
+                newElement.innerHTML = `${key.substring(0 , 9)}-<span>${data[key]['word']}</span>-${data[key]['translation']}`;
+
                 pronounsDiv.appendChild(newElement);
 
                 pronouns.push(key)
@@ -203,10 +145,11 @@ width: 80px;
 
 
             }
-            else if(key[2] === 'a'){
+            else if(key.substring(2, 5) === 'adj'){
                 
                 const newElement = document.createElement('p');
-                newElement.textContent = key;
+                newElement.innerHTML = `${key.substring(0 , 5)}-<span>${data[key]['word']}</span>-${data[key]['translation']}`;
+
                 adjsDiv.appendChild(newElement);
 
                 adjs.push(key)
@@ -214,6 +157,24 @@ width: 80px;
 
 
             }
+
+
+            
+//advsDiv
+            else if(key.substring(2, 5) === 'adv'){
+                
+                const newElement = document.createElement('p');
+                newElement.innerHTML = `${key.substring(0 , 5)}-<span>${data[key]['word']}</span>-${data[key]['translation']}`;
+
+                advsDiv.appendChild(newElement);
+
+                advs.push(key)
+                wordsData.push(key)
+
+
+            }
+
+
  
            }
   loader.style.display = 'none'
@@ -228,6 +189,8 @@ width: 80px;
 
   $('#pronounsLbl').text(`Pronouns (${pronouns.length}) :`);
 
+  $('#adverbsLbl').text(`Adverbs (${advs.length}) :`);
+
        
         });
        
@@ -237,21 +200,27 @@ width: 80px;
         
         //styles
        // Assuming the paragraphs are added to a container with an ID of 'container'
+       container.addEventListener('click', function(event) {
+    // Check if the clicked element is a <p> or inside a <p>
+    let targetElement = event.target;
 
-container.addEventListener('click', function(event) {
-    if (event.target.tagName.toLowerCase() === 'p') {
-        var text = event.target.textContent;
-        if(text[2] === 'v'){
+    // If the clicked element is a <span>, find the closest <p>
+    if (targetElement.tagName.toLowerCase() === 'span') {
+        targetElement = targetElement.closest('p');
+    }
+
+    // Now check if the target is a <p>
+    if (targetElement && targetElement.tagName.toLowerCase() === 'p') {
+        var text = targetElement.textContent;
+
+        if (text[2] === 'v') {
             window.location.href = `verb.html?id=${text}`;
-
-        }
-        else if(text[2] === 'n'){
+        } 
+        else if (text[2] === 'n') {
             window.location.href = `noun.html?id=${text}`;
-
-        }
-        else{
+        } 
+        else {
             window.location.href = `word.html?id=${text}`;
-
         }
     }
 });
@@ -259,24 +228,13 @@ container.addEventListener('click', function(event) {
 
 
 
-/*
-
-
-  const nounsDiv = document.getElementById('nouns');
-        const verbsDiv = document.getElementById('verbs');
-        const pronounsDiv = document.getElementById('pronouns');
-        const adjsDiv = document.getElementById('adjs');
-
-
-
-
-*/
-
 $('#verbsBtn').on('click' , function(){
     nounsDiv.style.display = 'none'
     pronounsDiv.style.display = 'none'
     adjsDiv.style.display = 'none'
     verbsDiv.style.display = 'block'
+    advsDiv.style.display = 'none'
+
     $('Button').css('background-color', 'white');
     $('Button').css('color', 'black');
     $(this).css('background-color', 'black');
@@ -289,6 +247,8 @@ $('#nounsBtn').on('click' , function(){
     pronounsDiv.style.display = 'none'
     adjsDiv.style.display = 'none'
     verbsDiv.style.display = 'none'
+    advsDiv.style.display = 'none'
+
     $('Button').css('background-color', 'white');
     $('Button').css('color', 'black');
     $(this).css('background-color', 'black');
@@ -300,6 +260,8 @@ $('#pronounsBtn').on('click' , function(){
     pronounsDiv.style.display = 'block'
     adjsDiv.style.display = 'none'
     verbsDiv.style.display = 'none'
+    advsDiv.style.display = 'none'
+
 
     $('Button').css('background-color', 'white');
     $('Button').css('color', 'black');
@@ -312,6 +274,8 @@ $('#adjsBtn').on('click' , function(){
     pronounsDiv.style.display = 'none'
     adjsDiv.style.display = 'block'
     verbsDiv.style.display = 'none'
+    advsDiv.style.display = 'none'
+
     $('Button').css('background-color', 'white');
     $('Button').css('color', 'black');
     $(this).css('background-color', 'black');
@@ -319,6 +283,24 @@ $('#adjsBtn').on('click' , function(){
 
     
 })
+
+
+$('#advsBtn').on('click' , function(){
+    nounsDiv.style.display = 'none'
+    pronounsDiv.style.display = 'none'
+    adjsDiv.style.display = 'none'
+    advsDiv.style.display = 'block'
+    verbsDiv.style.display = 'none'
+    $('Button').css('background-color', 'white');
+    $('Button').css('color', 'black');
+    $(this).css('background-color', 'black');
+    $(this).css('color', 'white');
+
+    
+})
+
+
+
 
     </script>
 </body>
