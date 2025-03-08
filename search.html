@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="shortcut icon" href="https://i.ibb.co/QpG1Q6n/Darija-logo.png" type="image/x-icon">
+   
+    <title>Darija Search</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: white;
+            color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        
+           
+            margin: 0;
+        }
+        
+.re {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: #333;
+    text-decoration: none;
+}
+
+i {
+    font-size: 24px;
+    color: #333;
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 10px;
+    transition: background-color .3s, color .3s;
+}
+
+i:hover {
+    background-color: #eaeaea;
+    color: #ff5722;
+    cursor: pointer;
+}
+        .logo{
+            font-weight: 700;
+            
+        }
+        .logo span{
+            color: gray;
+            font-size: 18px;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+           
+        }
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            
+        }
+        input, select {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid black;
+            font-family: 'Poppins', sans-serif;
+
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .result {
+            background: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .loading {
+            text-align: center;
+            font-style: italic;
+        }
+        .word{
+            border: solid 1px black;
+            border-radius: 10px;
+            transition: all .3s ease;
+        }
+        .word:hover{
+            background-color: rgb(248, 248, 248);
+            
+            height: fit-content;
+            transition: height 1.5s ease-in-out, opacity 1s ease-in-out, max-height 1.5s ease-in-out;
+
+
+        }
+        .word:hover #showMore {
+            display: block;
+            transition: all.3s ease;
+         animation: expandHeight 1.5s ease-in-out forwards;
+  
+         overflow-y: scroll;
+
+        }
+        #showMore{
+            transition: all.3s ease;
+
+            display: none;
+        }
+
+        @keyframes expandHeight {
+    from {
+        max-height: 0;
+        opacity: 0;
+    }
+    to {
+        max-height: 500px;  /* Adjust this to a value that fits your content */
+        opacity: 1;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    <i  class="fa fa-arrow-left re" id="re"></i>
+
+    <h1 class="logo">Darija <span>Search</span> </h1>
+    <div class="container">
+        <div class="search-container">
+            <input type="text" id="searchQuery" placeholder="Enter search term (e.g., brother)">
+            <select id="typeFilter">
+                <option value="">All Types</option>
+                <option value="noun">Noun</option>
+                <option value="verb">Verb</option>
+                <option value="adj">Adjective</option>
+                <option value="adv">Adverb</option>
+                <option value="pronoun">Pronoun</option>
+            </select>
+        </div>
+        <div id="results"></div>
+    </div>
+    
+    <script>
+        document.getElementById('searchQuery').addEventListener('input', performSearch);
+        document.getElementById('typeFilter').addEventListener('change', performSearch);
+        
+        async function performSearch() {
+            const query = document.getElementById('searchQuery').value.trim();
+            const type = document.getElementById('typeFilter').value;
+            const resultsDiv = document.getElementById('results');
+            
+            if (!query) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+            
+            try {
+                const url = new URL('https://darijaorg-api.vercel.app/search');
+                url.searchParams.append('q', query);
+                if (type) url.searchParams.append('type', type);
+
+                resultsDiv.innerHTML = '<p class="loading">Loading...</p>';
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (!response.ok) throw new Error('API request failed');
+
+                displayResults(data.data);
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="loading">Error: ${error.message}</p>`;
+            }
+        }
+
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            if (!data || Object.keys(data).length === 0) {
+                resultsDiv.innerHTML = '<p class="loading">No results found</p>';
+                return;
+            }
+
+            for (const key in data) {
+                const item = data[key];
+                const id = generateId(item.word , item.type , item.translation )
+                let content = `<div  class="result word" tt="${item.type}" id="${id}">
+                    <h2>${item.word} (${item.type})</h2>
+                    <p>Translation: ${item.translation}</p>`;
+                content += '<div id="showMore"'
+
+                if (item.details) content += `<p>Details: ${item.details}</p>`;
+                if (item.example) content += `<p>Example: ${item.example}</p>`;
+                if (item.gender) content += `<p>Gender: ${item.gender}</p>`;
+                if (item.phonetic) content += `<p>Phonetic: ${item.phonetic}</p>`;
+                if (item.singular) content += `<p>Singular: ${item.singular}</p>`;
+                if (item.plural) content += `<p>Plural: ${item.plural}</p>`;
+                if (item.source) content += `<p>Source: ${item.source}</p>`;
+                
+                if (item.past_tense || item.present_tense || item.future_tense) {
+                    content += '<h3>Tenses:</h3>';
+                    content += formatTenses('Past Tense', item.past_tense);
+                    content += formatTenses('Present Tense', item.present_tense);
+                    content += formatTenses('Future Tense', item.future_tense);
+                }
+                
+                if (item.prounouns) {
+                    content += `<h3>Pronouns:</h3><div>${formatPronouns(item.prounouns)}</div>`;
+                }
+                if (item['prounouns-plural']) {
+                    content += `<h3>Plural Pronouns:</h3><div>${formatPronouns(item['prounouns-plural'])}</div>`;
+                }
+
+                content += '</div>';
+                content += '</div>';
+                resultsDiv.innerHTML += content;
+            }
+        }
+
+        function formatPronouns(pronouns) {
+            if (!pronouns) return 'None';
+            return Object.entries(pronouns).map(([key, value]) => `<p>${key}: ${value}</p>`).join('');
+        }
+
+        function formatTenses(title, tenseData) {
+            if (!tenseData) return '';
+            return `<h4>${title}</h4>` + Object.entries(tenseData)
+                .map(([key, value]) => `<p>${key}: ${value}</p>`)
+                .join('');
+        }
+
+
+        function generateId(word, type, translation) {
+            const firstLetter = word.charAt(0).toLowerCase();
+            return `${firstLetter}-${type}-${word}-${translation}`.replace(/\s+/g, '-');
+        }
+
+        function generateRedirectUrl(type, id) {
+            if (type === 'noun') {
+                return `noun.html?id=${id}&search=true`;
+            } else if (type === 'verb') {
+                return `verb.html?id=${id}&search=true`;
+            } else {
+                return `word.html?id=${id}&search=true`;
+            }
+        }
+        
+
+        document.querySelector('body').addEventListener('click' ,
+
+        (e)=>{
+            /*
+            if(e.target.className === "result word"){
+             
+                const id = e.target.id
+                const type = e.target.getAttribute('tt')
+                const url = generateRedirectUrl(type , id)
+
+                window.location.href = url
+
+            }*/
+
+
+     
+            if (event.target.classList.contains("result") && event.target.classList.contains("word") ) {
+                 const id = e.target.id
+                 const type = e.target.getAttribute('tt')
+                 const url = generateRedirectUrl(type , id)
+                  window.location.href = url
+
+               
+            }
+            else if (event.target.closest(".result.word")) {
+                const thetarget = event.target.closest(".result.word")
+
+              
+                    const id = thetarget.id
+                    const type = thetarget.getAttribute('tt')
+                    const url = generateRedirectUrl(type , id)
+
+                    window.location.href = url
+                    
+            }
+
+
+
+        }
+        )
+    </script>
+    <script>
+        document.getElementById('re').addEventListener('click'
+            , () =>{
+                window.location.href = "index.html"
+            }
+        )
+    </script>
+</body>
+</html>
